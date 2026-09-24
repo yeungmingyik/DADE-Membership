@@ -1,5 +1,22 @@
 [
   {
+    "version": "0.2.2",
+    "date": "2026-09-25",
+    "added": [],
+    "changed": [
+      {
+        "en": "Collectible membership cards with original bronze architecture, silver sculpture and champagne-gold artwork, a charcoal frame and a separate cardholder strip.",
+        "zh-CN": "会员卡改为品牌收藏系列，采用暖铜建筑、冷银雕塑与香槟金装置三张独立主图，搭配炭黑卡框和独立持卡人信息栏。"
+      },
+      {
+        "en": "Precompressed, cacheable card artwork with subtle pointer-hover feedback and static cards on touch devices and reduced-motion settings.",
+        "zh-CN": "卡面使用预压缩可缓存图片，鼠标悬停提供轻微反馈，触屏与减少动态效果设置下保持静态。"
+      }
+    ],
+    "fixed": [],
+    "removed": []
+  },
+  {
     "version": "0.2.1",
     "date": "2026-09-25",
     "added": [],

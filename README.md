@@ -2,7 +2,7 @@
 
 新加坡多门店会员服务平台 · Membership services for stores in Singapore
 
-**版本 / Version:** 0.2.1
+**版本 / Version:** 0.2.2
 
 **阶段 / Stage:** 应用基础与数据查询 / Application foundation and data access
 
