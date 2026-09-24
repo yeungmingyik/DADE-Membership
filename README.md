@@ -2,7 +2,7 @@
 
 新加坡多门店会员服务平台 · Membership services for stores in Singapore
 
-**版本 / Version:** 0.2.0
+**版本 / Version:** 0.2.1
 
 **阶段 / Stage:** 应用基础与数据查询 / Application foundation and data access
 
@@ -14,9 +14,9 @@
 | 门店 / Stores | 门店概览、会员检索、会员详情、活动记录 / Store overview, member search, member details and activity |
 | 总部 / Head office | 业务概览、会员、门店、员工与活动记录 / Overview, members, stores, staff and activity |
 
-当前版本提供查询界面与服务基础。真实短信验证、账号开通、员工认证及 MFA、消费记账、兑换、退款和运营配置尚未交付；登录提交返回服务暂不可用，不签发会话。初始数据库不包含账户或演示数据。
+当前版本提供查询界面与服务基础。真实短信验证、账号开通、员工认证及 MFA、消费记账、兑换、退款、运营配置、回访分析和报表导出尚未交付；登录提交返回服务暂不可用，不签发会话。初始数据库不包含账户或演示数据。
 
-This version provides data views and service foundations. SMS verification, account provisioning, staff authentication and MFA, purchase posting, redemption, refunds and operational settings are not yet available. Login requests return service unavailable and do not issue sessions. A new database contains no accounts or demo data.
+This version provides data views and service foundations. SMS verification, account provisioning, staff authentication and MFA, purchase posting, redemption, refunds, operational settings, visit analysis and report exports are not yet available. Login requests return service unavailable and do not issue sessions. A new database contains no accounts or demo data.
 
 ## 产品标准 / Product standards
 

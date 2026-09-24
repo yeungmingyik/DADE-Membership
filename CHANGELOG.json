@@ -1,5 +1,31 @@
 [
   {
+    "version": "0.2.1",
+    "date": "2026-09-25",
+    "added": [],
+    "changed": [
+      {
+        "en": "Distinct bronze embossed, silver faceted and charcoal-gold membership cards, using static metal textures and separate high-contrast member codes.",
+        "zh-CN": "会员卡改为铜质压印、银色切面与炭黑金箔三档独立设计，采用静态金属纹理，会员码保持独立高对比展示。"
+      },
+      {
+        "en": "Compact member points and visit progress on phones, with inline navigation on tablets and desktops.",
+        "zh-CN": "压缩手机会员积分与到店进度区域，平板和桌面导航移入页面内容上方。"
+      },
+      {
+        "en": "Head-office navigation drawer and two-column phone metrics; member tiers and visits remain visible in compact directories.",
+        "zh-CN": "总部新增窄屏导航抽屉和手机双列指标，紧凑会员目录保留等级与到店次数。"
+      }
+    ],
+    "fixed": [
+      {
+        "en": "Responsive wrapping for long names, store labels, balances and activity amounts across the three surfaces.",
+        "zh-CN": "修正三端长姓名、门店名称、余额及活动金额的响应式换行。"
+      }
+    ],
+    "removed": []
+  },
+  {
     "version": "0.2.0",
     "date": "2026-09-24",
     "added": [
