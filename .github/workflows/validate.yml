@@ -12,9 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  release:
+  application:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
@@ -23,3 +23,8 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run check:release
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm run test:runtime

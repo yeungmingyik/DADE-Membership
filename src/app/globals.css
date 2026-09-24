@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/noto-sans/index.css";
+@import "@fontsource-variable/noto-sans-sc/index.css";
+
+:root {
+  --background: #f7f7f4;
+  --foreground: #252723;
+  --card: #ffffff;
+  --card-foreground: #252723;
+  --popover: #ffffff;
+  --popover-foreground: #252723;
+  --primary: #30362f;
+  --primary-foreground: #ffffff;
+  --secondary: #eeefea;
+  --secondary-foreground: #41483d;
+  --muted: #f0f0ec;
+  --muted-foreground: #6b7067;
+  --accent: #e9ece3;
+  --accent-foreground: #373e31;
+  --border: #e2e4dc;
+  --input: #d5d9ce;
+  --ring: #777f6d;
+  --destructive: #ab3037;
+  --destructive-foreground: #ffffff;
+  --success: #f1eeea;
+  --success-foreground: #403a36;
+  --success-border: #ddd4ca;
+  --radius: 0.875rem;
+}
+
+@theme inline {
+  --font-sans: "Noto Sans Variable", "Noto Sans SC Variable", sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-border: var(--success-border);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+}
+
+@layer base {
+  * { border-color: var(--border); }
+  html { scrollbar-gutter: stable; }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  html[lang="zh-CN"] body { font-family: "Noto Sans SC Variable", "Noto Sans Variable", sans-serif; }
+  button, a, input, select { -webkit-tap-highlight-color: transparent; }
+  button:not(:disabled), a { touch-action: manipulation; }
+  button:not(:disabled) { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
+  ::selection { background: #dfe3d7; color: #252723; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

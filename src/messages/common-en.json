@@ -1,0 +1,38 @@
+{
+  "Common": {
+    "member": "Membership",
+    "staff": "Store workspace",
+    "admin": "Head office",
+    "signOut": "Sign out",
+    "close": "Close",
+    "back": "Back to sign in",
+    "notFound": "Page not found",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "loading": "Loading"
+  },
+  "Auth": {
+    "eyebrow": "YOUR DADE MEMBERSHIP",
+    "title": "Good to see you.",
+    "staffTitle": "Store sign in",
+    "adminTitle": "Head office sign in",
+    "mobile": "Mobile number",
+    "email": "Email address",
+    "password": "Password",
+    "country": "Country or region",
+    "countrySearch": "Search country or calling code",
+    "noCountries": "No matching countries",
+    "continue": "Continue",
+    "signIn": "Sign in",
+    "pending": "Please wait",
+    "phonePlaceholder": "Mobile number",
+    "invalidPhone": "Enter a valid mobile number.",
+    "invalidInput": "Check your details and try again.",
+    "unavailable": "Sign in is temporarily unavailable. Please try again later.",
+    "networkError": "Unable to connect. Check your connection and try again.",
+    "cardLabel": "MEMBERSHIP",
+    "cardCaption": "Your member card",
+    "secure": "Secure sign in",
+    "fieldRequired": "Complete this field."
+  }
+}

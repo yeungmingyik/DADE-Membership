@@ -1,5 +1,38 @@
 [
   {
+    "version": "0.2.0",
+    "date": "2026-09-24",
+    "added": [
+      {
+        "en": "Bilingual, responsive member, staff and head-office surfaces with a neutral visual theme.",
+        "zh-CN": "采用中性主题的双语响应式会员、员工与总部界面。"
+      },
+      {
+        "en": "Digital membership card, QR code, points and tier views, reward catalogue and activity details.",
+        "zh-CN": "数字会员卡、会员二维码、积分与等级视图、礼品目录和活动详情。"
+      },
+      {
+        "en": "Store-scoped member views and head-office overview, member, store and staff directories.",
+        "zh-CN": "受门店范围限制的会员视图，以及总部概览、会员、门店和员工目录。"
+      },
+      {
+        "en": "International phone input with Singapore +65 as the default, bilingual country search and E.164 validation.",
+        "zh-CN": "默认新加坡 +65 的国际号码输入、双语国家搜索与 E.164 校验。"
+      },
+      {
+        "en": "SQLite schema migrations, aggregate projections, bounded reads, session storage and server-side access checks.",
+        "zh-CN": "SQLite 结构迁移、汇总投影、限量查询、会话存储与服务端访问校验。"
+      },
+      {
+        "en": "Standalone application packaging, local fonts, unit tests and isolated production-runtime integration checks.",
+        "zh-CN": "独立应用打包、本地字体、单元测试及隔离的生产构建集成检查。"
+      }
+    ],
+    "changed": [],
+    "fixed": [],
+    "removed": []
+  },
+  {
     "version": "0.1.0",
     "date": "2026-09-24",
     "added": [
