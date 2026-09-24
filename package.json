@@ -1,0 +1,19 @@
+{
+  "name": "dade-membership",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "author": "yeungmingyik",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yeungmingyik/DADE-Membership.git"
+  },
+  "scripts": {
+    "check:release": "node scripts/check-release.mjs"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "npm@11.17.0"
+}

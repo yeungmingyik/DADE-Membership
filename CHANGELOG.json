@@ -1,0 +1,23 @@
+[
+  {
+    "version": "0.1.0",
+    "date": "2026-09-24",
+    "added": [
+      {
+        "en": "DADE Membership repository baseline and bilingual product README.",
+        "zh-CN": "DADE Membership 仓库基线与双语产品 README。"
+      },
+      {
+        "en": "Version consistency validation and continuous integration workflow.",
+        "zh-CN": "版本一致性校验及持续集成流程。"
+      },
+      {
+        "en": "Repository exclusions for local planning, credentials and runtime data.",
+        "zh-CN": "本地规划、凭据及运行数据的仓库排除配置。"
+      }
+    ],
+    "changed": [],
+    "fixed": [],
+    "removed": []
+  }
+]
