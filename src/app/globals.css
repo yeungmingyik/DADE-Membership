@@ -4,6 +4,7 @@
 @import "@fontsource-variable/noto-sans-sc/index.css";
 
 :root {
+  --font-ui: "Noto Sans Variable", "Noto Sans SC Variable", sans-serif;
   --background: #f7f7f4;
   --foreground: #252723;
   --card: #ffffff;
@@ -29,8 +30,13 @@
   --radius: 0.875rem;
 }
 
+html[lang="zh-CN"] {
+  --font-ui: "Noto Sans SC Variable", "Noto Sans Variable", sans-serif;
+}
+
 @theme inline {
-  --font-sans: "Noto Sans Variable", "Noto Sans SC Variable", sans-serif;
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-ui);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -63,12 +69,15 @@
   * { border-color: var(--border); }
   html { scrollbar-gutter: stable; }
   body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
-  html[lang="zh-CN"] body { font-family: "Noto Sans SC Variable", "Noto Sans Variable", sans-serif; }
   button, a, input, select { -webkit-tap-highlight-color: transparent; }
   button:not(:disabled), a { touch-action: manipulation; }
   button:not(:disabled) { cursor: pointer; }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
   ::selection { background: #dfe3d7; color: #252723; }
+}
+
+@utility font-mono {
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {

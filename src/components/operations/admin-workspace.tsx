@@ -22,14 +22,14 @@ import {
   WorkspaceShell,
 } from "./shared";
 
-function MetricCard({ label, value, icon: Icon }: { label: string; value: string; icon: LucideIcon }) {
+function MetricCard({ label, value, unit, icon: Icon }: { label: string; value: string; unit?: string; icon: LucideIcon }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
-        <Icon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+    <div className="@container flex min-w-0 flex-col rounded-2xl border border-border bg-card p-3.5 sm:p-5 xl:p-6">
+      <div className="mb-4 flex flex-1 items-start justify-between gap-2 sm:mb-6">
+        <p className="min-w-0 text-[11px] leading-relaxed font-medium text-muted-foreground [overflow-wrap:anywhere] sm:text-xs">{label}</p>
+        <Icon className="mt-0.5 size-3.5 shrink-0 text-muted-foreground sm:size-4" aria-hidden="true" />
       </div>
-      <p className="text-[1.7rem] leading-none font-medium tracking-[-0.04em] tabular-nums xl:text-[1.85rem]">{value}</p>
+      <p className="flex min-w-0 flex-wrap items-baseline gap-x-1.5 gap-y-1 font-medium tabular-nums">{unit && <span className="text-[10px] font-normal tracking-wide text-muted-foreground sm:text-xs">{unit}</span>}<span className={`min-w-0 leading-tight tracking-[-0.04em] [overflow-wrap:anywhere] ${value.length > 10 ? "text-[clamp(.75rem,9cqi,1.5rem)]" : "text-[clamp(1rem,11cqi,1.85rem)]"}`}>{value}</span></p>
     </div>
   );
 }
@@ -40,14 +40,14 @@ function StoreDirectory({ stores, locale }: { stores: AdminDashboard["stores"]; 
   return (
     <ul className="divide-y divide-border">
       {stores.map((store) => (
-        <li key={store.id} className="px-5 py-5 sm:px-6">
-          <div className="flex items-start gap-3.5">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-background"><Store className="size-4 text-muted-foreground" aria-hidden="true" /></span>
+        <li key={store.id} className="px-4 py-4 sm:px-6 sm:py-5">
+          <div className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-x-3 gap-y-2 sm:flex sm:gap-3.5">
+            <span className="row-span-2 flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-background"><Store className="size-4 text-muted-foreground" aria-hidden="true" /></span>
             <div className="min-w-0 flex-1">
-              <p className="mb-1.5 truncate text-sm font-medium">{store.name[locale]}</p>
+              <p className="mb-1.5 text-sm font-medium [overflow-wrap:anywhere]">{store.name[locale]}</p>
               <p className="text-xs text-muted-foreground">{t("storeMemberCount", { count: store.memberCount })}</p>
             </div>
-            <ActiveBadge status={store.status} />
+            <span className="col-start-2 sm:shrink-0"><ActiveBadge status={store.status} /></span>
           </div>
         </li>
       ))}
@@ -59,27 +59,27 @@ function TeamDirectory({ data, locale }: { data: AdminDashboard; locale: Locale 
   const t = useTranslations("Operations");
   if (data.staff.length === 0) return <EmptyState label={t("noStaff")} />;
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm">
+    <div>
+      <table className="w-full table-fixed text-left text-sm">
         <thead className="bg-background/65 text-[11px] text-muted-foreground">
           <tr>
-            <th scope="col" className="px-5 py-3 font-medium sm:px-6">{t("teamMember")}</th>
-            <th scope="col" className="hidden px-4 py-3 font-medium sm:table-cell">{t("role")}</th>
-            <th scope="col" className="hidden px-4 py-3 font-medium xl:table-cell">{t("store")}</th>
-            <th scope="col" className="px-5 py-3 text-right font-medium sm:px-6">{t("statusLabel")}</th>
+            <th scope="col" className="px-4 py-3 font-medium sm:px-6">{t("teamMember")}</th>
+            <th scope="col" className="hidden w-[22%] px-4 py-3 font-medium sm:table-cell">{t("role")}</th>
+            <th scope="col" className="hidden w-[30%] px-4 py-3 font-medium xl:table-cell">{t("store")}</th>
+            <th scope="col" className="w-28 px-4 py-3 text-right font-medium sm:px-6">{t("statusLabel")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
           {data.staff.map((member) => (
             <tr key={member.id}>
-              <td className="px-5 py-5 sm:px-6">
+              <td className="px-4 py-5 [overflow-wrap:anywhere] sm:px-6">
                 <p className="text-[13px] font-medium">{member.name}</p>
                 <p className="mt-1 text-[11px] text-muted-foreground sm:hidden">{t.has(`roles.${member.role}`) ? t(`roles.${member.role}`) : t("roles.staff")}</p>
                 <p className="mt-1 text-[11px] text-muted-foreground xl:hidden">{member.storeName[locale]}</p>
               </td>
-              <td className="hidden px-4 py-5 text-xs text-muted-foreground sm:table-cell">{t.has(`roles.${member.role}`) ? t(`roles.${member.role}`) : t("roles.staff")}</td>
-              <td className="hidden px-4 py-5 text-xs text-muted-foreground xl:table-cell">{member.storeName[locale]}</td>
-              <td className="px-5 py-5 text-right sm:px-6"><ActiveBadge status={member.status} /></td>
+              <td className="hidden px-4 py-5 text-xs text-muted-foreground [overflow-wrap:anywhere] sm:table-cell">{t.has(`roles.${member.role}`) ? t(`roles.${member.role}`) : t("roles.staff")}</td>
+              <td className="hidden px-4 py-5 text-xs text-muted-foreground [overflow-wrap:anywhere] xl:table-cell">{member.storeName[locale]}</td>
+              <td className="px-4 py-5 text-right sm:px-6"><ActiveBadge status={member.status} /></td>
             </tr>
           ))}
         </tbody>
@@ -115,9 +115,9 @@ export function AdminWorkspace({ locale, data }: { locale: Locale; data: AdminDa
 
       {section === "overview" && (
         <div className="space-y-7">
-          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 2xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             <MetricCard label={t("totalMembers")} value={formatNumber(data.metrics.memberCount, locale)} icon={Users} />
-            <MetricCard label={t("recordedPurchases")} value={formatMoney(data.metrics.purchaseCents, locale)} icon={Wallet} />
+            <MetricCard label={t("recordedPurchases")} value={formatMoney(data.metrics.purchaseCents, locale).replace("SGD", "").trim()} unit="SGD" icon={Wallet} />
             <MetricCard label={t("pointsIssued")} value={formatNumber(data.metrics.pointsIssued, locale)} icon={CreditCard} />
             <MetricCard label={t("redemptions")} value={formatNumber(data.metrics.redemptionCount, locale)} icon={Gift} />
           </div>

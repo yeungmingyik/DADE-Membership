@@ -1,5 +1,48 @@
 [
   {
+    "version": "0.2.1",
+    "date": "2026-09-25",
+    "added": [
+      {
+        "en": "Paginated points collection with ten stamps per page, driven by the current points balance.",
+        "zh-CN": "新增积分集章，每页十枚，按当前积分余额显示并支持翻页。"
+      }
+    ],
+    "changed": [
+      {
+        "en": "Full-bleed bronze, silver and gold membership artwork with soft gradients and a locally blurred cardholder area.",
+        "zh-CN": "铜、银、金会员卡采用独立的整卡背景，通过柔和渐变和持卡人区域的局部柔焦融合。"
+      },
+      {
+        "en": "Precompressed card artwork, static touch layouts and subtle desktop hover feedback.",
+        "zh-CN": "卡面采用预压缩图片，触屏保持静态，桌面提供轻微悬停反馈。"
+      },
+      {
+        "en": "Responsive member navigation and points layout; head-office phone metrics, navigation drawer and compact member directories.",
+        "zh-CN": "优化会员导航和积分布局，以及总部手机指标、导航抽屉与紧凑会员目录。"
+      },
+      {
+        "en": "Local Noto Sans and Noto Sans SC across all surfaces, including tabular member numbers and amounts.",
+        "zh-CN": "三端统一使用本地 Noto Sans 与 Noto Sans SC，会员编号和金额保留等宽数字。"
+      }
+    ],
+    "fixed": [
+      {
+        "en": "Removed the white DADE logo backing and retained the original transparent logo at its correct aspect ratio.",
+        "zh-CN": "移除 DADE Logo 白色衬底，保留官方透明原图与正确比例。"
+      },
+      {
+        "en": "Search clearing restores input focus; member directories and navigation support arrow keys, Home and End.",
+        "zh-CN": "清空搜索后恢复输入框焦点，会员目录及导航支持方向键、Home 和 End。"
+      },
+      {
+        "en": "Responsive wrapping and cardholder contrast for long names, store labels, balances and activity amounts.",
+        "zh-CN": "修正长姓名、门店名、余额和活动金额换行，以及长卡片姓名区域的文字对比度。"
+      }
+    ],
+    "removed": []
+  },
+  {
     "version": "0.2.0",
     "date": "2026-09-24",
     "added": [

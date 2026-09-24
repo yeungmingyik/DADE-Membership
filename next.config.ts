@@ -22,7 +22,10 @@ const config: NextConfig = {
     }, {
       source: "/api/:path*",
       headers: [{ key: "Cache-Control", value: "private, no-store" }]
-    }];
+    }, ...["bronze", "silver", "gold"].map((tier) => ({
+      source: `/member-cards/${tier}-collection-v1.webp`,
+      headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
+    }))];
   }
 };
 

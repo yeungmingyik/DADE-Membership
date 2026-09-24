@@ -2,7 +2,7 @@
 
 新加坡多门店会员服务平台 · Membership services for stores in Singapore
 
-**版本 / Version:** 0.2.0
+**版本 / Version:** 0.2.1
 
 **阶段 / Stage:** 应用基础与数据查询 / Application foundation and data access
 
@@ -10,17 +10,17 @@
 
 | 使用端 / Surface | 功能 / Capabilities |
 | --- | --- |
-| 会员 / Members | 数字会员卡、会员码、积分与等级、礼品目录、活动记录、账户 / Digital card, membership code, points and tier, reward catalogue, activity and account |
+| 会员 / Members | 数字会员卡、会员码、积分集章与等级、礼品目录、活动记录、账户 / Digital card, membership code, points collection and tier, reward catalogue, activity and account |
 | 门店 / Stores | 门店概览、会员检索、会员详情、活动记录 / Store overview, member search, member details and activity |
 | 总部 / Head office | 业务概览、会员、门店、员工与活动记录 / Overview, members, stores, staff and activity |
 
-当前版本提供查询界面与服务基础。真实短信验证、账号开通、员工认证及 MFA、消费记账、兑换、退款和运营配置尚未交付；登录提交返回服务暂不可用，不签发会话。初始数据库不包含账户或演示数据。
+当前版本提供查询界面与服务基础。真实短信验证、账号开通、员工认证及 MFA、消费记账、兑换、退款、运营配置、回访分析和报表导出尚未交付；登录提交返回服务暂不可用，不签发会话。初始数据库不包含账户或演示数据。
 
-This version provides data views and service foundations. SMS verification, account provisioning, staff authentication and MFA, purchase posting, redemption, refunds and operational settings are not yet available. Login requests return service unavailable and do not issue sessions. A new database contains no accounts or demo data.
+This version provides data views and service foundations. SMS verification, account provisioning, staff authentication and MFA, purchase posting, redemption, refunds, operational settings, visit analysis and report exports are not yet available. Login requests return service unavailable and do not issue sessions. A new database contains no accounts or demo data.
 
 ## 产品标准 / Product standards
 
-- English 与简体中文 / English and Simplified Chinese.
+- English 与简体中文，本地 Noto Sans 与 Noto Sans SC 字体 / English and Simplified Chinese with locally hosted Noto Sans and Noto Sans SC.
 - 暖白、石灰灰与炭黑主题，适配手机、平板和桌面 / Warm white, stone and charcoal theme for mobile, tablet and desktop.
 - 手机号码表单默认新加坡 +65，支持国际区号及 E.164 校验 / Singapore +65 by default, international calling codes and E.164 validation.
 - 金额采用 SGD，业务时区为 Asia/Singapore / SGD amounts and Asia/Singapore business time.

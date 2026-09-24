@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type ReactNode, type RefObject } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import {
@@ -11,6 +11,7 @@ import {
   CircleOff,
   Gift,
   LayoutDashboard,
+  Menu,
   PackageCheck,
   Search,
   Store,
@@ -26,6 +27,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Activity, Locale, MemberSummary } from "@/lib/contracts";
 
@@ -35,6 +37,20 @@ type NavigationItem = {
   section: Section;
   icon: LucideIcon;
 };
+
+function moveButtonFocus(event: KeyboardEvent<HTMLButtonElement>, container: HTMLElement | null, horizontal = false) {
+  if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.nativeEvent.isComposing || !container) return;
+  const previous = event.key === "ArrowUp" || (horizontal && event.key === "ArrowLeft");
+  const next = event.key === "ArrowDown" || (horizontal && event.key === "ArrowRight");
+  if (!previous && !next && event.key !== "Home" && event.key !== "End") return;
+  const buttons = Array.from(container.querySelectorAll<HTMLButtonElement>("button[data-focus-item]:not(:disabled)"))
+    .filter((button) => button.getClientRects().length > 0 && window.getComputedStyle(button).visibility === "visible");
+  const currentIndex = buttons.indexOf(event.currentTarget);
+  if (currentIndex < 0) return;
+  const targetIndex = event.key === "Home" ? 0 : event.key === "End" ? buttons.length - 1 : Math.max(0, Math.min(buttons.length - 1, currentIndex + (next ? 1 : -1)));
+  event.preventDefault();
+  buttons[targetIndex]?.focus();
+}
 
 function replaceParameter(name: string, value: string) {
   const url = new URL(window.location.href);
@@ -101,6 +117,16 @@ export function WorkspaceShell({
   children: ReactNode;
 }) {
   const t = useTranslations("Operations");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const desktopNavigation = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeDesktopMenu = (event: MediaQueryListEvent) => {
+      if (event.matches) setMenuOpen(false);
+    };
+    desktop.addEventListener("change", closeDesktopMenu);
+    return () => desktop.removeEventListener("change", closeDesktopMenu);
+  }, []);
   const navigation: NavigationItem[] = [
     { section: "overview", icon: LayoutDashboard },
     { section: "members", icon: Users },
@@ -120,17 +146,41 @@ export function WorkspaceShell({
           <div className="mb-4 flex size-10 items-center justify-center rounded-xl border border-border bg-background">
             {kind === "staff" ? <Store className="size-[18px]" /> : <LayoutDashboard className="size-[18px]" />}
           </div>
-          <p className="text-sm font-semibold tracking-tight">{title}</p>
+          <p className="text-sm font-semibold tracking-tight [overflow-wrap:anywhere]">{title}</p>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{subtitle}</p>
         </div>
-        <nav aria-label={t("navigation")} className="flex gap-1 overflow-x-auto px-4 py-3 [scrollbar-width:none] lg:flex-col lg:px-4 lg:py-0 [&::-webkit-scrollbar]:hidden">
+        {kind === "admin" && <div className="flex items-center justify-between gap-3 px-4 py-2 lg:hidden">
+          <p className="min-w-0 text-sm font-medium">{t(`nav.${section}`)}</p>
+          <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="min-h-11 gap-2 px-3 text-xs"><Menu className="size-4" aria-hidden="true" />{t("openNavigation")}</Button>
+            </DialogTrigger>
+            <DialogContent className="top-0 left-0 h-svh max-h-none w-[min(20rem,calc(100%-3rem))] max-w-none translate-x-0 translate-y-0 content-start gap-6 rounded-none border-y-0 border-l-0 px-4 pt-7 pb-[max(env(safe-area-inset-bottom),1.5rem)] sm:max-w-none" onCloseAutoFocus={(event) => {
+              if (window.matchMedia("(min-width: 1024px)").matches) {
+                event.preventDefault();
+                desktopNavigation.current?.querySelector<HTMLButtonElement>('button[aria-current="page"]')?.focus();
+              }
+            }}>
+              <DialogHeader className="px-2 pr-8 text-left">
+                <DialogTitle>{title}</DialogTitle>
+                <DialogDescription>{subtitle}</DialogDescription>
+              </DialogHeader>
+              <nav aria-label={t("navigation")} className="grid gap-2">
+                {navigation.map(({ section: item, icon: Icon }) => <button key={item} type="button" data-focus-item aria-current={section === item ? "page" : undefined} onKeyDown={(event) => moveButtonFocus(event, event.currentTarget.closest("nav"), true)} onClick={() => { onSectionChange(item); setMenuOpen(false); }} className={`flex min-h-12 items-center gap-3 rounded-xl px-4 text-left text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${section === item ? "bg-foreground text-background" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}><Icon className="size-4 shrink-0" aria-hidden="true" />{t(`nav.${item}`)}</button>)}
+              </nav>
+            </DialogContent>
+          </Dialog>
+        </div>}
+        <nav ref={desktopNavigation} aria-label={t("navigation")} className={`${kind === "admin" ? "hidden lg:flex" : "grid grid-cols-3 lg:flex"} gap-1 px-3 py-3 lg:flex-col lg:px-4 lg:py-0`}>
           {navigation.map(({ section: item, icon: Icon }) => (
             <button
               key={item}
               type="button"
+              data-focus-item
               aria-current={section === item ? "page" : undefined}
+              onKeyDown={(event) => moveButtonFocus(event, event.currentTarget.closest("nav"), true)}
               onClick={() => onSectionChange(item)}
-              className={`flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+              className={`flex min-h-11 min-w-0 items-center justify-center gap-2 rounded-lg px-2 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:text-sm lg:justify-start lg:gap-3 lg:px-3.5 ${
                 section === item
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -145,7 +195,7 @@ export function WorkspaceShell({
           <p className="text-[10px] font-semibold tracking-[0.16em] text-muted-foreground">{t("brandMembership")}</p>
         </div>
       </aside>
-      <main className="min-w-0 flex-1 px-4 py-7 sm:px-7 lg:px-10 lg:py-9 xl:px-12">
+      <main className="min-w-0 flex-1 px-4 py-5 sm:px-7 sm:py-7 lg:px-10 lg:py-9 xl:px-12">
         {children}
       </main>
     </div>
@@ -162,10 +212,10 @@ export function SectionHeading({
   accessory?: ReactNode;
 }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        {eyebrow && <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground">{eyebrow}</p>}
-        <h1 className="text-[1.75rem] leading-tight font-semibold tracking-[-0.035em] sm:text-[2rem]">{title}</h1>
+    <div className="mb-5 flex flex-wrap items-end justify-between gap-3 sm:mb-8 sm:gap-4">
+      <div className="min-w-0">
+        {eyebrow && <p className="mb-2 text-xs font-medium tracking-wide text-muted-foreground [overflow-wrap:anywhere]">{eyebrow}</p>}
+        <h1 className="text-2xl leading-tight font-semibold tracking-[-0.035em] [overflow-wrap:anywhere] sm:text-[2rem]">{title}</h1>
       </div>
       {accessory}
     </div>
@@ -185,9 +235,9 @@ export function Panel({
 }) {
   return (
     <section className={`min-w-0 overflow-hidden rounded-2xl border border-border bg-card ${className}`}>
-      <div className="flex min-h-[4.5rem] items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
-        <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
-        {accessory}
+      <div className="flex min-h-16 flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-border px-4 py-3 sm:min-h-[4.5rem] sm:px-6 sm:py-4">
+        <h2 className="min-w-0 text-sm font-semibold tracking-tight [overflow-wrap:anywhere]">{title}</h2>
+        {accessory && <div className="shrink-0">{accessory}</div>}
       </div>
       {children}
     </section>
@@ -226,17 +276,26 @@ function MemberAvatar({ name }: { name: string }) {
 export function MemberSearch({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const t = useTranslations("Operations");
   const id = useId();
+  const input = useRef<HTMLInputElement | null>(null);
   return (
     <div className="relative w-full sm:max-w-md">
       <label htmlFor={id} className="sr-only">{t("filterMembers")}</label>
       <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
       <input
+        ref={input}
         id={id}
         type="search"
         autoComplete="off"
         maxLength={100}
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && value && !event.nativeEvent.isComposing) {
+            event.preventDefault();
+            event.stopPropagation();
+            onChange("");
+          }
+        }}
         placeholder={t("filterMembers")}
         className="h-11 w-full rounded-lg border border-input bg-background pr-11 pl-10 text-sm outline-none transition-shadow placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 [&::-webkit-search-cancel-button]:appearance-none"
       />
@@ -244,7 +303,10 @@ export function MemberSearch({ value, onChange }: { value: string; onChange: (va
         <button
           type="button"
           aria-label={t("clearFilter")}
-          onClick={() => onChange("")}
+          onClick={() => {
+            onChange("");
+            input.current?.focus({ preventScroll: true });
+          }}
           className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
         >
           <X className="size-4" aria-hidden="true" />
@@ -275,38 +337,44 @@ export function MemberTable({
   filtered?: boolean;
 }) {
   const t = useTranslations("Operations");
+  const tableId = useId();
   if (members.length === 0) return <EmptyState label={t(filtered ? "noMatchingMembers" : "noMembers")} />;
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm">
+    <div>
+      <table className="w-full table-fixed text-left text-sm">
         <thead className="bg-background/65 text-[11px] font-medium text-muted-foreground">
           <tr>
-            <th scope="col" className="px-5 py-3 font-medium sm:px-6">{t("member")}</th>
-            <th scope="col" className="hidden px-3 py-3 font-medium md:table-cell">{t("membership")}</th>
-            <th scope="col" className="px-5 py-3 text-right font-medium sm:px-6">{t("points")}</th>
-            <th scope="col" className="hidden px-5 py-3 text-right font-medium xl:table-cell">{t("visits")}</th>
+            <th scope="col" className="px-4 py-3 font-medium sm:px-6">{t("member")}</th>
+            <th scope="col" className="hidden w-24 px-3 py-3 font-medium md:table-cell">{t("membership")}</th>
+            <th scope="col" className="w-[32%] px-4 py-3 text-right font-medium sm:w-28 sm:px-6">{t("points")}</th>
+            <th scope="col" className="hidden w-28 px-5 py-3 text-right font-medium xl:table-cell">{t("visits")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
           {members.map((member) => (
-            <tr key={member.id} className="transition-colors hover:bg-muted/35">
-              <td className="py-1 pl-5 sm:pl-6">
+            <tr key={member.id} className="transition-colors hover:bg-muted/35 focus-within:bg-muted/50">
+              <td className="py-1 pl-4 sm:pl-6">
                 <button
                   type="button"
+                  data-focus-item
+                  onKeyDown={(event) => moveButtonFocus(event, event.currentTarget.closest("tbody"))}
                   onClick={(event) => onSelect(member, event.currentTarget)}
                   aria-label={t("viewMember", { name: member.name })}
-                  className="flex min-h-[4.25rem] w-full min-w-0 items-center gap-3 rounded-md py-2 pr-3 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  aria-describedby={`${tableId}-${member.id}`}
+                  className="flex min-h-[4.25rem] w-full min-w-0 items-center gap-2 rounded-md py-3 pr-2 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:gap-3 sm:pr-3"
                 >
-                  <MemberAvatar name={member.name} />
-                  <span className="min-w-0">
-                    <span className="block max-w-48 truncate text-[13px] font-medium">{member.name}</span>
+                  <span className="hidden sm:contents"><MemberAvatar name={member.name} /></span>
+                  <span className="min-w-0 [overflow-wrap:anywhere]">
+                    <span className="block text-[13px] font-medium">{member.name}</span>
                     <span className="mt-1 block text-[11px] tracking-wide text-muted-foreground">{member.number}</span>
+                    <span className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground xl:hidden"><span className="md:hidden"><TierBadge tier={member.tier} /></span><span>{t("visitCount", { count: member.visits })}</span></span>
                   </span>
                 </button>
+                <span id={`${tableId}-${member.id}`} className="sr-only">{member.number}. {t("membership")}: {t(`tier.${member.tier}`)}. {t("qualifyingVisits")}: {formatNumber(member.visits, locale)}.</span>
               </td>
               <td className="hidden px-3 py-3 md:table-cell"><TierBadge tier={member.tier} /></td>
-              <td className="px-5 py-3 text-right font-medium tabular-nums sm:px-6">{formatNumber(member.points, locale)}</td>
+              <td className="px-4 py-3 text-right text-xs font-medium tabular-nums [overflow-wrap:anywhere] sm:px-6 sm:text-sm">{formatNumber(member.points, locale)}</td>
               <td className="hidden px-5 py-3 text-right text-muted-foreground tabular-nums xl:table-cell">{formatNumber(member.visits, locale)}</td>
             </tr>
           ))}
@@ -331,7 +399,7 @@ export function MemberDetail({
   return (
     <Dialog open={member !== null} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent
-        className="overflow-hidden rounded-2xl p-0 sm:max-w-md"
+        className="rounded-2xl p-0 sm:max-w-md"
         onCloseAutoFocus={(event) => {
           event.preventDefault();
           returnFocusRef.current?.focus({ preventScroll: true });
@@ -341,30 +409,30 @@ export function MemberDetail({
           <>
             <DialogHeader className="border-b border-border px-6 pt-7 pb-6 text-left">
               <p className="mb-3 text-xs font-medium text-muted-foreground">{t("memberProfile")}</p>
-              <DialogTitle className="text-2xl font-semibold tracking-tight">{member.name}</DialogTitle>
+              <DialogTitle className="pr-3 text-2xl leading-snug font-semibold tracking-tight [overflow-wrap:anywhere]">{member.name}</DialogTitle>
               <DialogDescription className="pt-1 text-xs tracking-wide">{member.number}</DialogDescription>
             </DialogHeader>
             <div className="px-6 pb-7">
-              <div className="mb-7 flex items-start justify-between rounded-xl bg-foreground px-5 py-5 text-background">
-                <div>
+              <div className="mb-7 flex flex-wrap items-start justify-between gap-3 rounded-xl bg-foreground px-5 py-5 text-background">
+                <div className="min-w-0">
                   <p className="text-xs opacity-65">{t("pointsBalance")}</p>
-                  <p className="mt-2 text-4xl font-medium tracking-tight tabular-nums">{formatNumber(member.points, locale)}</p>
+                  <p className="mt-2 text-3xl font-medium tracking-tight tabular-nums [overflow-wrap:anywhere] sm:text-4xl">{formatNumber(member.points, locale)}</p>
                 </div>
                 <TierBadge tier={member.tier} />
               </div>
               <dl className="space-y-5 text-sm">
                 <div className="flex items-center justify-between gap-4">
                   <dt className="text-muted-foreground">{t("mobileNumber")}</dt>
-                  <dd className="font-medium tabular-nums" dir="ltr">{member.phone}</dd>
+                  <dd className="min-w-0 text-right font-medium tabular-nums [overflow-wrap:anywhere]" dir="ltr">{member.phone}</dd>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <dt className="text-muted-foreground">{t("qualifyingVisits")}</dt>
-                  <dd className="font-medium tabular-nums">{formatNumber(member.visits, locale)}</dd>
+                  <dd className="min-w-0 text-right font-medium tabular-nums [overflow-wrap:anywhere]">{formatNumber(member.visits, locale)}</dd>
                 </div>
                 {member.nextTierVisits !== null && (
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-muted-foreground">{t("nextTierAt")}</dt>
-                    <dd className="font-medium">{t("visitCount", { count: member.nextTierVisits })}</dd>
+                    <dd className="min-w-0 text-right font-medium [overflow-wrap:anywhere]">{t("visitCount", { count: member.nextTierVisits })}</dd>
                   </div>
                 )}
               </dl>
@@ -399,27 +467,27 @@ export function ActivityRows({
       {activities.map((activity) => {
         const Icon = activityIcons[activity.kind];
         return (
-          <li key={activity.id} className="flex items-center gap-3 px-5 py-4 sm:gap-4 sm:px-6">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground">
+          <li key={activity.id} className="grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-x-3 gap-y-2 px-4 py-4 sm:flex sm:items-center sm:gap-4 sm:px-6">
+            <span className="row-span-2 flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground">
               <Icon className="size-4" aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[13px] font-medium">{t(`kind.${activity.kind}`)}</p>
-              <p className="mt-1 truncate text-[11px] text-muted-foreground">
+              <p className="mt-1 text-[11px] text-muted-foreground [overflow-wrap:anywhere]">
                 {compact ? formatDay(activity.occurredAt, locale) : activity.storeName[locale]}
                 <span className="mx-1.5" aria-hidden="true">·</span>
                 <time dateTime={activity.occurredAt}>{formatTime(activity.occurredAt, locale)}</time>
               </p>
               {!compact && <p className="mt-1.5 break-all text-[10px] tracking-wide text-muted-foreground">{activity.id}</p>}
             </div>
-            <div className="shrink-0 text-right">
+            <div className="col-start-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-left [overflow-wrap:anywhere] sm:block sm:max-w-[48%] sm:shrink-0 sm:text-right">
               {activity.amountCents !== null && <p className="text-xs font-medium tabular-nums">{formatMoney(activity.amountCents, locale)}</p>}
               {activity.pointsDelta !== 0 && (
-                <p className={`text-xs font-medium tabular-nums ${activity.amountCents !== null ? "mt-1 text-muted-foreground" : ""}`}>
+                <p className={`text-xs font-medium tabular-nums ${activity.amountCents !== null ? "text-muted-foreground sm:mt-1" : ""}`}>
                   {t("pointsChange", { value: `${activity.pointsDelta > 0 ? "+" : ""}${formatNumber(activity.pointsDelta, locale)}` })}
                 </p>
               )}
-              {!compact && <p className="mt-1.5 text-[10px] text-muted-foreground">{t(`status.${activity.status}`)}</p>}
+              {!compact && <p className="text-[10px] text-muted-foreground sm:mt-1.5">{t(`status.${activity.status}`)}</p>}
               {compact && activity.amountCents === null && activity.pointsDelta === 0 && <p className="text-xs text-muted-foreground">{t(`status.${activity.status}`)}</p>}
             </div>
           </li>
